@@ -1,10 +1,37 @@
-import React from "react";
+import React,{useState} from "react";
 import { useNavigate } from "react-router-dom";
-import workrequest from "../../public/workrequest.mp4";
+import workrequest from '../assets/workrequest.mp4';
 import { motion } from "framer-motion";
+import api from '../services/api';
+import { ThreeDot } from "react-loading-indicators";
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isloading, setIsLoading] = useState(false);
+
+  const handleLogin = async () => {
+    try {
+      setIsLoading(true);
+      const response = await api.post('/login', {email , password});
+
+      if(response.data.token){
+        localStorage.setItem('token', response.data.token);
+        console.log(response.data.message);
+        navigate('/status');
+      }else{
+        console.log(response.data.message);
+      }
+      
+    }catch(error){
+      console.log('Credenciais inválidas!');
+    }finally{
+      setIsLoading(false);
+    }
+
+  }
 
   return (
     <motion.div
@@ -14,7 +41,7 @@ export default function LoginPage() {
       transition={{ duration: 0.5 }}
       className="flex items-center justify-center h-screen w-full px-5 sm:px-0"
     >
-      <div className="flex bg-white rounded-lg shadow-lg overflow-hidden max-w-lg lg:max-w-6xl w-full h-2/3 outline outline-black/5">
+      <div className="flex bg-white rounded-lg shadow-lg overflow-hidden max-w-lg lg:max-w-6xl w-full h-3/4 outline outline-black/5">
         <div className="hidden md:flex lg:w-1/2 bg-cover border-r-1 border-gray-100 justify-center items-center">
           <video src={workrequest} autoPlay loop muted></video>
         </div>
@@ -31,6 +58,8 @@ export default function LoginPage() {
             <input
               className="text-gray-700 border border-gray-300 rounded py-2 px-4 block w-full focus:outline-2 focus:outline-blue-700"
               type="email"
+              value={email}
+              onChange={(event)=>setEmail(event.target.value)}
               required
             />
           </div>
@@ -42,6 +71,8 @@ export default function LoginPage() {
             <input
               className="text-gray-700 border border-gray-300 rounded py-2 px-4 block w-full focus:outline-2 focus:outline-blue-700"
               type="password"
+              value={password}
+              onChange={(event)=>setPassword(event.target.value)}
               required
             />
             <div className="text-xs text-gray-500 hover:text-gray-900 text-end w-full mt-2">
@@ -50,8 +81,8 @@ export default function LoginPage() {
           </div>
 
           <div className="mt-8">
-            <button className="bg-blue-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-blue-600">
-              Login
+            <button onClick={handleLogin} className="bg-blue-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-blue-600">
+              {isloading ? (<ThreeDot variant="bob" color="#ffffff" size="small" text="" textColor="" />) : 'Login'}
             </button>
           </div>
           <p className="text-center whitespace-nowrap text-gray-600 font-bold mt-2">

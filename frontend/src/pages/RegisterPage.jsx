@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import workrequest from '../../public/workrequest.mp4';
+import workrequest from '../assets/workrequest.mp4';
 import { motion } from "framer-motion";
 
 export default function RegisterPage() {
     const navigate = useNavigate();
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
 
     return (
         <motion.div 
@@ -14,19 +18,28 @@ export default function RegisterPage() {
             transition={{ duration: 0.5 }}  
             className="flex items-center justify-center h-screen w-full px-5 sm:px-0 "
         >
-            <div className="flex bg-white rounded-lg shadow-lg overflow-hidden max-w-lg lg:max-w-6xl w-full h-2/3 outline outline-black/5"> 
-                <div className="w-full p-8 lg:w-1/2">
+            <div className="flex bg-white rounded-lg shadow-lg overflow-hidden max-w-lg lg:max-w-6xl  w-full h-4/5 outline outline-black/5"> 
+                <div className="w-full p-8 lg:w-1/2 border-r-1 border-gray-100">
                     <p className="text-xl text-gray-600 text-center">Seja Bem vindo!</p>
                     
                     {/* CAMPOS DO FORM */}
                     <div className="mt-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2">Nome</label>
-                        <input className="text-gray-700 border border-gray-300 rounded py-2 px-4 block w-full focus:outline-2 focus:outline-blue-700" type="text" required />
+                        <input 
+                            onChange={(event)=> setName(event.target.value)} 
+                            value={name}
+                            className="text-gray-700 border border-gray-300 rounded py-2 px-4 block w-full focus:outline-2 focus:outline-blue-700"
+                            placeholder='Seu nome'
+                            type="text" 
+                            required />
                     </div>
                     
                     <div className="mt-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2">Email</label>
-                        <input className="text-gray-700 border border-gray-300 rounded py-2 px-4 block w-full focus:outline-2 focus:outline-blue-700" type="email" required />
+                        <input 
+                        onChange={(event)=> setEmail(event.target.value)}
+                        value={email}
+                        className="text-gray-700 border border-gray-300 rounded py-2 px-4 block w-full focus:outline-2 focus:outline-blue-700" type="email" required />
                     </div>
 
                     <div className="mt-4">
