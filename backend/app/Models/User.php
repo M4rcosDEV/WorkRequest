@@ -22,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'photo_user'
     ];
 
     /**
@@ -46,6 +47,12 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function getProfilePictureUrlAttribute()
+    {
+        return $this->photo_user ? asset('storage/' . $this->photo_user) : asset('default-profile.png');
+    }
+
 
     public function solicitacoes()
     {

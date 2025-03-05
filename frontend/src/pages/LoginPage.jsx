@@ -13,8 +13,15 @@ export default function LoginPage() {
   const [isloading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
+    setIsLoading(true);
+
+    if(email === "" || password === "") {
+      setError("Preencha todos os campos");
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      setIsLoading(true);
       const response = await api.post('/login', {email , password});
 
       if(response.data.token){
@@ -26,6 +33,7 @@ export default function LoginPage() {
       }
       
     }catch(error){
+      setError('Credenciais inválidas!');
       console.log('Credenciais inválidas!');
     }finally{
       setIsLoading(false);
@@ -75,14 +83,14 @@ export default function LoginPage() {
               onChange={(event)=>setPassword(event.target.value)}
               required
             />
-            <div className="text-xs text-gray-500 hover:text-gray-900 text-end w-full mt-2">
+            <div className="text-xs text-gray-500 cursor-pointer hover:text-gray-900 text-end w-full mt-2">
               Esqueceu a senha?
             </div>
-          </div>
-
+          </div>  
+          {error && <p className="text-red-500 text-center">{error}</p>}
           <div className="mt-8">
-            <button onClick={handleLogin} className="bg-blue-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-blue-600">
-              {isloading ? (<ThreeDot variant="bob" color="#ffffff" size="small" text="" textColor="" />) : 'Login'}
+            <button onClick={handleLogin} className="bg-blue-400 cursor-pointer text-white font-bold py-2 px-4 w-full rounded hover:bg-blue-300">
+              {isloading ? (<span className="loaderLogin"></span>) : 'Login'}
             </button>
           </div>
           <p className="text-center whitespace-nowrap text-gray-600 font-bold mt-2">
@@ -110,7 +118,7 @@ export default function LoginPage() {
                   />
                 </svg>
               </div>
-              <div className="flex w-full justify-center ">
+              <div className="flex w-full justify-center cursor-pointer ">
                 <h1 className="whitespace-nowrap text-gray-600 font-bold">
                   Faça login com o Google
                 </h1>

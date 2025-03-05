@@ -24,6 +24,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/perfil', [UserController::class, 'perfil']);
     Route::get('/logout', [LogoutController::class, 'logout']);
 
+    Route::post('/perfil/photo_user', [UserController::class, 'updateProfilePicture']);
+
     //CRUD status
     Route::get('/status', [StatusController::class , 'index'])->name('status.index');
     Route::post('/status', [StatusController::class , 'criarStatus'])->name('status.criar');

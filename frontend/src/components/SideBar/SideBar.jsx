@@ -3,18 +3,22 @@ import { Link, useNavigate } from "react-router-dom";
 import userPerfil from "../../assets/images/user.png";
 import api from "../../services/api";
 
-export default function SideBar({ user, closeSidebar }) {
+export default function SideBar({ closeSidebar }) {
   const [cadastrosOpen, setCadastrosOpen] = useState(false);
   const [userInfo, setUserInfo] = useState({});
   const navigate = useNavigate();
+  const [isLoading , setIsLoading] = useState(false);
 
   const dadosUser = async () => {
+    setIsLoading(true);
     try {
       const response = await api.get('/perfil');
       console.log(response.data.user);
       setUserInfo(response.data.user);
     } catch (error) {
       console.log('Erro ao buscar dados do usuário', error);
+    }finally{
+      setIsLoading(false);
     }
   }
 
@@ -58,16 +62,27 @@ export default function SideBar({ user, closeSidebar }) {
       {/* Usuário */}
       <div className="mb-5 p-4">
         <img
-          src={userPerfil}
+          src={userInfo?.photo_user}
           alt="Usuário"
           className="w-12 h-12 rounded-full mx-auto mb-4"
         />
-        <h5 className="block font-sans text-xl text-center text-gray-900">
-          {userInfo?.name || "Usuário"}
-        </h5>
-        <h5 className="block font-sans text-xl text-center text-gray-900">
-          {userInfo?.email || "Email"}
-        </h5>
+        <div className="flex flex-col items-center justify-center">
+          {!isLoading ? (
+            <>
+              <h5 className="block font-sans text-xl text-center text-gray-900">
+                {userInfo?.name}
+              </h5>
+              <h5 className="block font-sans text-xl text-center text-gray-900">
+                {userInfo?.email}
+              </h5>
+            </>
+          ) : (
+            // <div className="text-center text-gray-500">Carregando...
+            <span className="loader mt-7"></span>
+            //</div>
+            
+          )}
+        </div>
         <hr className="mt-5" />
       </div>
 
@@ -113,7 +128,7 @@ export default function SideBar({ user, closeSidebar }) {
         </Link>
 
         {/* Dropdown de Cadastros */}
-        {user?.is_admin && (
+        {/* {user?.is_admin && ( */}
           <div className="relative">
             <button
               onClick={() => setCadastrosOpen(!cadastrosOpen)}
@@ -161,7 +176,7 @@ export default function SideBar({ user, closeSidebar }) {
               </div>
             </div>
           </div>
-        )}
+        {/* )} */}
 
         {/* Link para Relatórios */}
         <Link

@@ -50,4 +50,26 @@ class UserController extends Controller
             return response()->json(['message' => 'Error ao criar Usuario'], 500);
         }
     }  
+
+    public function updateProfilePicture(Request $request)
+    {
+        $request->validate([
+            'photo_user' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        $user = auth()->user();
+
+        // Remover imagem anterior (se existir)
+        if ($user->photo_user) {
+            Storage::delete($user->photo_user);
+        }
+
+        // Armazena a nova imagem
+        $path = $request->file('photo_user')->store('photo_users', 'public');
+
+        // Atualiza o caminho no banco
+        $user->update(['photo_user' => $path]);
+
+        return response()->json(['message' => 'Foto de perfil atualizada!', 'photo_user' => $path]);
+    }
 }

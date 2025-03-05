@@ -11,12 +11,6 @@ function MainLayout() {
         console.log(sidebarOpen);
     };
 
-    const user = {
-        name: "Marcos Silva",
-        email: "marcos@email.com",
-        is_admin: true,
-    };
-
 
 
     return (
@@ -39,7 +33,7 @@ function MainLayout() {
 
             {/* Sidebar com animação */}
             <div className={`${sidebarOpen ? "flex" : "hidden"} `}>
-                <SideBar user={user} closeSidebar={closeSidebar} />
+                <SideBar closeSidebar={closeSidebar} />
             </div>
 
             {/* Área de conteúdo que muda conforme a rota */}
