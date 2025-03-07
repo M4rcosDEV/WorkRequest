@@ -5,16 +5,22 @@ import api from "../../services/api";
 
 export default function SideBar({ closeSidebar }) {
   const [cadastrosOpen, setCadastrosOpen] = useState(false);
-  const [userInfo, setUserInfo] = useState({});
+  //const [userInfo, setUserInfo] = useState({});
+  const [userInfo, setUserInfo] = useState(() => {
+    const storedUser = localStorage.getItem("userInfo");
+    return storedUser ? JSON.parse(storedUser) : {};
+  });
   const navigate = useNavigate();
-  const [isLoading , setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(!userInfo?.name);
 
   const dadosUser = async () => {
+    if (localStorage.getItem("userInfo")) return;
     setIsLoading(true);
     try {
       const response = await api.get('/perfil');
       console.log(response.data.user);
       setUserInfo(response.data.user);
+      localStorage.setItem("userInfo", JSON.stringify(response.data.user)); 
     } catch (error) {
       console.log('Erro ao buscar dados do usuário', error);
     }finally{
@@ -25,6 +31,7 @@ export default function SideBar({ closeSidebar }) {
   const logout = async () => {
     try {
       const response = await api.get('/logout');
+      localStorage.removeItem("userInfo");
       console.log(response.data.message);
       navigate('/login');
     }catch (error) {
@@ -35,6 +42,8 @@ export default function SideBar({ closeSidebar }) {
   useEffect(()=>{
     dadosUser();
   }, []);
+
+  console.log(`/storage/${userInfo?.photo_user}`);
 
   return (
     <div className="fixed left-0 top-0 flex flex-col bg-white text-gray-700 h-screen w-[20rem] p-4 shadow-xl">
@@ -62,9 +71,9 @@ export default function SideBar({ closeSidebar }) {
       {/* Usuário */}
       <div className="mb-5 p-4">
         <img
-          src={userInfo?.photo_user}
+          src={`${import.meta.env.VITE_BACKEND_URL}/storage/${userInfo?.photo_user}`}
           alt="Usuário"
-          className="w-12 h-12 rounded-full mx-auto mb-4"
+          className="w-20 h-20 rounded-full mx-auto mb-4"
         />
         <div className="flex flex-col items-center justify-center">
           {!isLoading ? (
